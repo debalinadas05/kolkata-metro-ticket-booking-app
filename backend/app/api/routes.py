@@ -7,6 +7,7 @@ from app.services.unlock_service import verify_and_unlock_system
 from app.services.graph_engine import get_metro_route
 from pydantic import BaseModel, Field
 from typing import List, Optional
+from app.db.sqlite_client import get_sqlite_conn
 
 router = APIRouter()
 
@@ -23,7 +24,11 @@ def get_all_stations():
     Fetches all metro stations and their line colors from the SQLite static database.
     """
     try:
-       pass
+       with get_sqlite_conn() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, name, line FROM stations")
+        rows = cursor.fetchall()
+        return [dict(row) for row in rows]
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch stations from database: {str(e)}")
 
