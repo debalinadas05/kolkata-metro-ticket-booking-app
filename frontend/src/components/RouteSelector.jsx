@@ -182,6 +182,11 @@ export default function RouteSelector({ onTicketBooked }) {
     };
     fetchStations();
   }, []);
+  useEffect(() => {
+    setRouteData(null);
+    setSuccessMsg('');
+  }, [source, destination]);
+
 
   const calculatePath = async (e) => {
     e.preventDefault();
